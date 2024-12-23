@@ -1,0 +1,17 @@
+{
+  "name": "vouchers",
+  "version": "1.0.0",
+  "main": "dist/main.js",
+  "scripts": {
+    "start": "tsc && electron --trace-warnings ."
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "electron": "^33.2.1"
+  },
+  "dependencies": {
+    "pdf-lib": "^1.17.1"
+  }
+}
