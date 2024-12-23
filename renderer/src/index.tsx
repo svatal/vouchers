@@ -10,12 +10,14 @@ function App() {
   const expiration = b.useState(() => generateExpiration());
   const pdfUrl = b.useState("");
   b.useEffect(() => {
-    // TODO: delay
-    window.voucher
-      .preview(page(), getVoucherParams(code(), expiration()))
-      .then((pdf) =>
-        pdfUrl(`${pdf}#toolbar=0&navpanes=0&page=${page[0]}&view=Fit`)
-      );
+    const timeoutId = setTimeout(() => {
+      window.voucher
+        .preview(page(), getVoucherParams(code(), expiration()))
+        .then((pdf) =>
+          pdfUrl(`${pdf}#toolbar=0&navpanes=0&page=${page[0]}&view=Fit`)
+        );
+    }, 500);
+    return () => clearTimeout(timeoutId);
   }, [page(), code(), expiration()]);
   return (
     <div
