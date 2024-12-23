@@ -26,7 +26,7 @@ class Main {
     });
     this.mainWindow = new BrowserWindow({
       width: 1000,
-      height: 600,
+      height: 800,
       webPreferences: {
         // nodeIntegration: true,
         preload: path.join(__dirname, "preload.js"),

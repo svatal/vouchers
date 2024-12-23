@@ -1,4 +1,5 @@
 import * as fs from "fs/promises";
+import * as path from "path";
 import { PDFDocument, rgb } from "pdf-lib";
 
 export interface IText {
@@ -18,7 +19,7 @@ export async function createVoucher(pageNumber: number, texts: IText[]) {
 }
 
 export async function prepareVoucher(pageNumber: number, texts: IText[]) {
-  const template = "assets/voucher-template.pdf";
+  const template = path.join(__dirname, "..", "assets", "voucher-template.pdf");
   const bytes = await fs.readFile(template);
   const origDoc = await PDFDocument.load(bytes);
   const targetDoc = await PDFDocument.create();
