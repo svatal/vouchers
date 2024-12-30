@@ -17,7 +17,7 @@
     "compilerOptions": {
       "strict": true
     },
-    "files": [
+    "includeSources": [
       "../main/preload.d.ts"
     ]
   }

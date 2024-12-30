@@ -1,13 +1,41 @@
 {
   "compilerOptions": {
-    "target": "es5",
-    "module": "commonjs",
-    "outDir": "./dist",
+    "allowImportingTsExtensions": true,
+    "allowJs": false,
+    "allowSyntheticDefaultImports": true,
+    "checkJs": false,
+    "declaration": false,
+    "downlevelIteration": true,
+    "experimentalDecorators": true,
+    "forceConsistentCasingInFileNames": true,
     "jsx": "react",
+    "lib": [
+      "es2022",
+      "dom"
+    ],
+    "module": "es2022",
+    "moduleResolution": "bundler",
+    "noEmit": true,
+    "noEmitHelpers": true,
     "reactNamespace": "b",
+    "removeComments": false,
+    "skipLibCheck": false,
+    "skipDefaultLibCheck": true,
+    "sourceMap": true,
     "strict": true,
-    "esModuleInterop": true
+    "target": "es2019",
+    "resolveJsonModule": true
   },
-  "files": ["../main/preload.d.ts"],
-  "include": ["src/**/*.ts", "src/**/*.tsx"]
+  "files": [
+    "src/index.tsx",
+    "../main/preload.d.ts"
+  ],
+  "include": [
+    "**/*.spec.ts",
+    "**/*.spec.tsx",
+    "**/*.spec.d.ts",
+    "**/*Spec.ts",
+    "**/*Spec.tsx",
+    "**/*Spec.d.ts"
+  ]
 }
