@@ -2,6 +2,7 @@ import { app, BrowserWindow, dialog, ipcMain } from "electron";
 import * as path from "path";
 import { createVoucher, previewVoucher } from "./pdf";
 import * as fs from "fs";
+import { getSettings } from "./settings";
 
 class Main {
   mainWindow: BrowserWindow | null = null;
@@ -12,15 +13,16 @@ class Main {
   }
 
   createWindow = () => {
-    ipcMain.handle("voucher-preview", (event, pageNumber, texts) =>
-      previewVoucher(pageNumber, texts)
+    ipcMain.handle("settings-get", getSettings);
+    ipcMain.handle("voucher-preview", (event, voucherId, texts) =>
+      previewVoucher(voucherId, texts)
     );
-    ipcMain.handle("voucher-create", async (event, pageNumber, texts) => {
+    ipcMain.handle("voucher-create", async (event, voucherId, texts) => {
       const dialogResult = await dialog.showSaveDialog(this.mainWindow!, {
         defaultPath: path.join(app.getPath("downloads"), "voucher.pdf"),
       });
       if (!dialogResult.canceled) {
-        const bytes = await createVoucher(pageNumber, texts);
+        const bytes = await createVoucher(voucherId, texts);
         fs.writeFileSync(dialogResult.filePath, bytes);
       }
     });

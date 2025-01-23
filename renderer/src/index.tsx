@@ -5,20 +5,18 @@ b.init(() => <App />);
 b.injectCss(`html, body { height: 100%; margin: 0; padding:0; }`);
 
 function App() {
-  const page = b.useState(1);
+  const voucherId = b.useState("300");
   const code = b.useState(() => generateCode());
   const expiration = b.useState(() => generateExpiration());
   const pdfUrl = b.useState("");
   b.useEffect(() => {
     const timeoutId = setTimeout(() => {
       window.voucher
-        .preview(page(), getVoucherParams(code(), expiration()))
-        .then((pdf) =>
-          pdfUrl(`${pdf}#toolbar=0&navpanes=0&page=${page[0]}&view=Fit`)
-        );
+        .preview(voucherId(), getVoucherParams(code(), expiration()))
+        .then((pdf) => pdfUrl(`${pdf}#toolbar=0&navpanes=0&view=Fit`));
     }, 500);
     return () => clearTimeout(timeoutId);
-  }, [page(), code(), expiration()]);
+  }, [voucherId(), code(), expiration()]);
   return (
     <div
       style={{
@@ -41,10 +39,10 @@ function App() {
       >
         <div>
           Value:&nbsp;
-          <select value={page}>
-            <option value={1}>300 Kč</option>
-            <option value={0}>500 Kč</option>
-            <option value={2}>1000 Kč</option>
+          <select value={voucherId}>
+            <option value={"300"}>300 Kč</option>
+            <option value={"500"}>500 Kč</option>
+            <option value={"1000"}>1000 Kč</option>
           </select>
         </div>
         <div>
@@ -72,7 +70,7 @@ function App() {
             type="button"
             onClick={() => {
               window.voucher.create(
-                page(),
+                voucherId(),
                 getVoucherParams(code(), expiration())
               );
             }}
@@ -90,15 +88,8 @@ function App() {
   );
 }
 
-function getVoucherParams(code: string, expiration: string) {
-  return [
-    {
-      text: expiration,
-      x: 300,
-      y: 53,
-    },
-    { text: code, x: 270, y: 35 },
-  ];
+function getVoucherParams(code: string, validUntil: string) {
+  return { code, validUntil };
 }
 
 function generateCode() {

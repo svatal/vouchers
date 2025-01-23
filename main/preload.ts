@@ -1,9 +1,13 @@
 import { contextBridge, ipcRenderer } from "electron";
-import { IText } from "./pdf";
+import { ITexts } from "./sharedTypes";
 
 contextBridge.exposeInMainWorld("voucher", {
-  preview: (pageNumber: number, texts: IText[]) =>
-    ipcRenderer.invoke("voucher-preview", pageNumber, texts),
-  create: (pageNumber: number, texts: IText[]) =>
-    ipcRenderer.invoke("voucher-create", pageNumber, texts),
+  preview: (voucherId: string, texts: ITexts) =>
+    ipcRenderer.invoke("voucher-preview", voucherId, texts),
+  create: (voucherId: string, texts: ITexts) =>
+    ipcRenderer.invoke("voucher-create", voucherId, texts),
+});
+
+contextBridge.exposeInMainWorld("settings", {
+  get: () => ipcRenderer.invoke("settings-get"),
 });
