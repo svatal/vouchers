@@ -1,5 +1,10 @@
 import * as b from "bobril";
 
+interface Voucher {
+  id: string;
+  name: string;
+}
+
 b.init(() => <App />);
 
 b.injectCss(`html, body { height: 100%; margin: 0; padding:0; }`);
@@ -9,6 +14,14 @@ function App() {
   const code = b.useState(() => generateCode());
   const expiration = b.useState(() => generateExpiration());
   const pdfUrl = b.useState("");
+  const vouchers = b.useState<Voucher[]>([]);
+
+  b.useEffect(() => {
+    window.settings.get().then((settings) => {
+      vouchers(settings.vouchers);
+    });
+  }, []);
+
   b.useEffect(() => {
     const timeoutId = setTimeout(() => {
       window.voucher
@@ -17,6 +30,7 @@ function App() {
     }, 500);
     return () => clearTimeout(timeoutId);
   }, [voucherId(), code(), expiration()]);
+
   return (
     <div
       style={{
@@ -40,9 +54,11 @@ function App() {
         <div>
           Value:&nbsp;
           <select value={voucherId}>
-            <option value={"300"}>300 Kč</option>
-            <option value={"500"}>500 Kč</option>
-            <option value={"1000"}>1000 Kč</option>
+            {vouchers().map((voucher) => (
+              <option key={voucher.id} value={voucher.id}>
+                {voucher.name}
+              </option>
+            ))}
           </select>
         </div>
         <div>
