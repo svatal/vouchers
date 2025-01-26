@@ -6,7 +6,7 @@ interface Voucher {
 }
 
 export function VoucherTab() {
-  const voucherId = b.useState("300");
+  const [voucherId, setVoucherId] = b.useState<string | null>(null);
   const code = b.useState(() => generateCode());
   const expiration = b.useState(() => generateExpiration());
   const pdfUrl = b.useState("");
@@ -15,17 +15,22 @@ export function VoucherTab() {
   b.useEffect(() => {
     window.settings.get().then((settings) => {
       vouchers(settings.vouchers);
+      if (settings.vouchers.length > 0) {
+        setVoucherId(settings.vouchers[0].id);
+      }
     });
   }, []);
 
   b.useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      window.voucher
-        .preview(voucherId(), getVoucherParams(code(), expiration()))
-        .then((pdf) => pdfUrl(`${pdf}#toolbar=0&navpanes=0&view=Fit`));
-    }, 500);
-    return () => clearTimeout(timeoutId);
-  }, [voucherId(), code(), expiration()]);
+    if (voucherId !== null) {
+      const timeoutId = setTimeout(() => {
+        window.voucher
+          .preview(voucherId, getVoucherParams(code(), expiration()))
+          .then((pdf) => pdfUrl(`${pdf}#toolbar=0&navpanes=0&view=Fit`));
+      }, 500);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [voucherId, code(), expiration()]);
 
   return (
     <>
@@ -40,7 +45,10 @@ export function VoucherTab() {
       >
         <div>
           Value:&nbsp;
-          <select value={voucherId}>
+          <select
+            value={voucherId}
+            onChange={(newValue: string) => setVoucherId(newValue)}
+          >
             {vouchers().map((voucher) => (
               <option key={voucher.id} value={voucher.id}>
                 {voucher.name}
@@ -72,10 +80,11 @@ export function VoucherTab() {
           <input
             type="button"
             onClick={() => {
-              window.voucher.create(
-                voucherId(),
-                getVoucherParams(code(), expiration())
-              );
+              if (voucherId !== null)
+                window.voucher.create(
+                  voucherId,
+                  getVoucherParams(code(), expiration())
+                );
             }}
             value="Create Voucher"
           />
