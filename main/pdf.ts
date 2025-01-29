@@ -15,7 +15,8 @@ export async function createVoucher(voucherId: string, texts: ITexts) {
 }
 
 export async function prepareVoucher(voucherId: string, texts: ITexts) {
-  const voucherSetting = getSettings().vouchers.find((v) => v.id === voucherId);
+  const settings = getSettings();
+  const voucherSetting = settings.vouchers.find((v) => v.id === voucherId);
   if (!voucherSetting) {
     throw new Error("Voucher setting not found");
   }
@@ -23,7 +24,7 @@ export async function prepareVoucher(voucherId: string, texts: ITexts) {
     __dirname,
     "..",
     "assets",
-    voucherSetting.filename
+    settings.templates[voucherSetting.templateId].filename
   );
   const bytes = await fs.readFile(template);
   const origDoc = await PDFDocument.load(bytes);
@@ -39,4 +40,10 @@ export async function prepareVoucher(voucherId: string, texts: ITexts) {
   ].forEach(({ text, position }) => page.drawText(text, position));
 
   return targetDoc;
+}
+
+export async function getPdfPageCount(filePath: string): Promise<number> {
+  const bytes = await fs.readFile(filePath);
+  const pdfDoc = await PDFDocument.load(bytes);
+  return pdfDoc.getPageCount();
 }

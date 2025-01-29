@@ -11,5 +11,8 @@ declare global {
     settings: {
       get: () => Promise<ISettings>;
     };
+    template: {
+      upload: () => Promise<void>;
+    };
   }
 }

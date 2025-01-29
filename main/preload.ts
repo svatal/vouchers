@@ -11,3 +11,7 @@ contextBridge.exposeInMainWorld("voucher", {
 contextBridge.exposeInMainWorld("settings", {
   get: () => ipcRenderer.invoke("settings-get"),
 });
+
+contextBridge.exposeInMainWorld("template", {
+  upload: () => ipcRenderer.invoke("template-upload"),
+});
