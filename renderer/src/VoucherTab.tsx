@@ -1,7 +1,6 @@
 import * as b from "bobril";
 
 interface Voucher {
-  id: string;
   name: string;
 }
 
@@ -10,13 +9,14 @@ export function VoucherTab() {
   const code = b.useState(() => generateCode());
   const expiration = b.useState(() => generateExpiration());
   const pdfUrl = b.useState("");
-  const vouchers = b.useState<Voucher[]>([]);
+  const vouchers = b.useState<{ [id: string]: Voucher }>({});
 
   b.useEffect(() => {
     window.settings.get().then((settings) => {
       vouchers(settings.vouchers);
-      if (settings.vouchers.length > 0) {
-        setVoucherId(settings.vouchers[0].id);
+      const firstVoucherId = Object.keys(settings.vouchers)[0];
+      if (firstVoucherId) {
+        setVoucherId(firstVoucherId);
       }
     });
   }, []);
@@ -49,8 +49,8 @@ export function VoucherTab() {
             value={voucherId}
             onChange={(newValue: string) => setVoucherId(newValue)}
           >
-            {vouchers().map((voucher) => (
-              <option key={voucher.id} value={voucher.id}>
+            {Object.entries(vouchers()).map(([id, voucher]) => (
+              <option key={id} value={id}>
                 {voucher.name}
               </option>
             ))}

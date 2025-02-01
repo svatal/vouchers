@@ -16,7 +16,7 @@ export async function createVoucher(voucherId: string, texts: ITexts) {
 
 export async function prepareVoucher(voucherId: string, texts: ITexts) {
   const settings = getSettings();
-  const voucherSetting = settings.vouchers.find((v) => v.id === voucherId);
+  const voucherSetting = settings.vouchers[voucherId];
   if (!voucherSetting) {
     throw new Error("Voucher setting not found");
   }

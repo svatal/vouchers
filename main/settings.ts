@@ -23,32 +23,29 @@ function loadSettings() {
     settings = JSON.parse(fs.readFileSync(settingsPath, "utf-8"));
   } catch (e) {
     settings = {
-      vouchers: [
-        {
-          id: "300",
+      vouchers: {
+        "300": {
           name: "300 Kč",
           templateId: "voucher",
           page: 1,
           codePosition: { x: 270, y: 35 },
           validUntilPosition: { x: 300, y: 53 },
         },
-        {
-          id: "500",
+        "500": {
           name: "500 Kč",
           templateId: "voucher",
           page: 0,
           codePosition: { x: 270, y: 35 },
           validUntilPosition: { x: 300, y: 53 },
         },
-        {
-          id: "1000",
+        "1000": {
           name: "1000 Kč",
           templateId: "voucher",
           page: 2,
           codePosition: { x: 270, y: 35 },
           validUntilPosition: { x: 300, y: 53 },
         },
-      ],
+      },
       templates: {
         voucher: {
           filename: "voucher-template.pdf",
@@ -64,31 +61,34 @@ export function addTemplate(template: IVoucherTemplate) {
   if (!settings) {
     loadSettings();
   }
-  const templateId = template.filename.replace(".pdf", "");
-  settings!.templates[templateId] = template;
+  const id = generateId();
+  settings!.templates[id] = template;
   saveSettings();
-  return templateId;
 }
 
 export function addVoucherSetting(voucher: IVoucherSetting) {
   if (!settings) {
     loadSettings();
   }
-  settings!.vouchers.push(voucher);
+  const id = generateId();
+  settings!.vouchers[id] = voucher;
   saveSettings();
 }
 
-export function editVoucherSetting(voucher: IVoucherSetting) {
+export function editVoucherSetting(id: string, voucher: IVoucherSetting) {
   if (!settings) {
     loadSettings();
   }
-  const index = settings!.vouchers.findIndex((v) => v.id === voucher.id);
-  if (index !== -1) {
-    settings!.vouchers[index] = voucher;
+  if (settings!.vouchers[id]) {
+    settings!.vouchers[id] = voucher;
     saveSettings();
   }
 }
 
 function saveSettings() {
-  fs.writeFileSync(settingsPath, JSON.stringify(settings));
+  fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2));
+}
+
+function generateId() {
+  return Math.random().toString(36).substr(2, 9);
 }

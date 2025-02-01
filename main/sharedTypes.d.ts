@@ -4,7 +4,6 @@ export interface ITexts {
 }
 
 export interface IVoucherSetting {
-  id: string;
   name: string;
   templateId: string;
   page: number;
@@ -18,6 +17,6 @@ export interface IVoucherTemplate {
 }
 
 export interface ISettings {
-  vouchers: IVoucherSetting[];
-  templates: { [filename: string]: IVoucherTemplate };
+  vouchers: { [id: string]: IVoucherSetting };
+  templates: { [id: string]: IVoucherTemplate };
 }
