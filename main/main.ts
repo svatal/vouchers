@@ -1,8 +1,14 @@
 import { app, BrowserWindow, dialog, ipcMain } from "electron";
 import * as path from "path";
-import { createVoucher, previewVoucher, getPdfPageCount } from "./pdf";
+import {
+  createVoucher,
+  previewVoucher,
+  getPdfPageCount,
+  prepareVoucher,
+} from "./pdf";
 import * as fs from "fs";
-import { getSettings, addTemplate } from "./settings";
+import { getSettings, addTemplate, addVoucherSetting } from "./settings";
+import { ITexts, IVoucherSetting } from "./sharedTypes";
 
 class Main {
   mainWindow: BrowserWindow | null = null;
@@ -14,18 +20,23 @@ class Main {
 
   createWindow = () => {
     ipcMain.handle("settings-get", getSettings);
-    ipcMain.handle("voucher-preview", (event, voucherId, texts) =>
-      previewVoucher(voucherId, texts)
+    ipcMain.handle(
+      "voucher-preview",
+      (event, voucherId: string, texts: ITexts) =>
+        previewVoucher(voucherId, texts)
     );
-    ipcMain.handle("voucher-create", async (event, voucherId, texts) => {
-      const dialogResult = await dialog.showSaveDialog(this.mainWindow!, {
-        defaultPath: path.join(app.getPath("downloads"), "voucher.pdf"),
-      });
-      if (!dialogResult.canceled) {
-        const bytes = await createVoucher(voucherId, texts);
-        fs.writeFileSync(dialogResult.filePath, bytes);
+    ipcMain.handle(
+      "voucher-create",
+      async (event, voucherId: string, texts: ITexts) => {
+        const dialogResult = await dialog.showSaveDialog(this.mainWindow!, {
+          defaultPath: path.join(app.getPath("downloads"), "voucher.pdf"),
+        });
+        if (!dialogResult.canceled) {
+          const bytes = await createVoucher(voucherId, texts);
+          fs.writeFileSync(dialogResult.filePath, bytes);
+        }
       }
-    });
+    );
     ipcMain.handle("template-upload", async () => {
       const dialogResult = await dialog.showOpenDialog(this.mainWindow!, {
         properties: ["openFile"],
@@ -44,6 +55,27 @@ class Main {
         addTemplate({ filename, pageCount });
       }
     });
+    ipcMain.handle(
+      "template-create",
+      async (event, voucher: IVoucherSetting) => {
+        await addVoucherSetting(voucher);
+      }
+    );
+
+    ipcMain.handle(
+      "template-preview",
+      async (event, voucher: IVoucherSetting) => {
+        const now = new Date();
+        const preview = await prepareVoucher(voucher, {
+          code: "ABCDEFG",
+          validUntil: `${now.getDate()}.${
+            now.getMonth() + 1
+          }.${now.getFullYear()}`,
+        });
+        return preview.saveAsBase64({ dataUri: true });
+      }
+    );
+
     this.mainWindow = new BrowserWindow({
       width: 1000,
       height: 800,

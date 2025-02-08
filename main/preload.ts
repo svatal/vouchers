@@ -1,5 +1,5 @@
 import { contextBridge, ipcRenderer } from "electron";
-import { ITexts } from "./sharedTypes";
+import { ITexts, IVoucherSetting } from "./sharedTypes";
 
 contextBridge.exposeInMainWorld("voucher", {
   preview: (voucherId: string, texts: ITexts) =>
@@ -14,4 +14,8 @@ contextBridge.exposeInMainWorld("settings", {
 
 contextBridge.exposeInMainWorld("template", {
   upload: () => ipcRenderer.invoke("template-upload"),
+  preview: (voucher: IVoucherSetting) =>
+    ipcRenderer.invoke("template-preview", voucher),
+  create: (voucher: IVoucherSetting) =>
+    ipcRenderer.invoke("template-create", voucher),
 });

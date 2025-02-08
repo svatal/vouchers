@@ -1,25 +1,33 @@
 import * as fs from "fs/promises";
 import * as path from "path";
 import { PDFDocument, rgb } from "pdf-lib";
-import { ITexts } from "./sharedTypes";
+import { ITexts, IVoucherSetting } from "./sharedTypes";
 import { getSettings } from "./settings";
 
 export async function previewVoucher(voucherId: string, texts: ITexts) {
-  const voucherDoc = await prepareVoucher(voucherId, texts);
+  const voucherDoc = await prepareVoucherFromTemplate(voucherId, texts);
   return await voucherDoc.saveAsBase64({ dataUri: true });
 }
 
 export async function createVoucher(voucherId: string, texts: ITexts) {
-  const voucherDoc = await prepareVoucher(voucherId, texts);
+  const voucherDoc = await prepareVoucherFromTemplate(voucherId, texts);
   return await voucherDoc.save();
 }
 
-export async function prepareVoucher(voucherId: string, texts: ITexts) {
+async function prepareVoucherFromTemplate(voucherId: string, texts: ITexts) {
   const settings = getSettings();
   const voucherSetting = settings.vouchers[voucherId];
   if (!voucherSetting) {
     throw new Error("Voucher setting not found");
   }
+  return await prepareVoucher(voucherSetting, texts);
+}
+
+export async function prepareVoucher(
+  voucherSetting: IVoucherSetting,
+  texts: ITexts
+) {
+  const settings = getSettings();
   const template = path.join(
     __dirname,
     "..",
