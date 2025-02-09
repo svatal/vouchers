@@ -52,13 +52,13 @@ class Main {
         );
         await fs.promises.copyFile(filePath, destination);
         const pageCount = await getPdfPageCount(destination);
-        addTemplate({ filename, pageCount });
+        return addTemplate({ filename, pageCount });
       }
     });
     ipcMain.handle(
       "template-create",
       async (event, voucher: IVoucherSetting) => {
-        await addVoucherSetting(voucher);
+        return addVoucherSetting(voucher);
       }
     );
 

@@ -64,6 +64,7 @@ export function addTemplate(template: IVoucherTemplate) {
   const id = generateId();
   settings!.templates[id] = template;
   saveSettings();
+  return id;
 }
 
 export function addVoucherSetting(voucher: IVoucherSetting) {
@@ -73,6 +74,7 @@ export function addVoucherSetting(voucher: IVoucherSetting) {
   const id = generateId();
   settings!.vouchers[id] = voucher;
   saveSettings();
+  return id;
 }
 
 export function editVoucherSetting(id: string, voucher: IVoucherSetting) {
