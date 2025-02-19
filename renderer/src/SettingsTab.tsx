@@ -1,4 +1,5 @@
 import * as b from "bobril";
+import { SplitPane } from "./components/SplitPane";
 import type { ISettings } from "../../main/sharedTypes";
 
 export function SettingsTab() {
@@ -35,8 +36,8 @@ export function SettingsTab() {
   }, [selectedTemplateId]);
 
   return (
-    <div style={{ display: "flex", flexDirection: "row", height: "100%" }}>
-      <div style={{ flex: 1, overflowY: "auto" }}>
+    <SplitPane split="vertical" minSize={200} defaultSize="50%">
+      <div style={{ overflowY: "auto" }}>
         {Object.entries(settings.templateFiles).map(
           ([templateFileId, templateFile]) => (
             <div key={templateFileId}>
@@ -76,12 +77,12 @@ export function SettingsTab() {
           )
         )}
       </div>
-      <div style={{ flex: 1 }}>
+      <div style={{ height: "100%" }}>
         <iframe
           src={templatePreviewUrl()}
           style={{ width: "100%", height: "100%", border: "none" }}
         />
       </div>
-    </div>
+    </SplitPane>
   );
 }

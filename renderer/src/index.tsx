@@ -1,5 +1,5 @@
 import * as b from "bobril";
-import { TabButton } from "./TabButton";
+import { TabButton } from "./components/TabButton";
 import { VoucherTab } from "./VoucherTab";
 import { SettingsTab } from "./SettingsTab";
 
