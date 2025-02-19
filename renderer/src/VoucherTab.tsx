@@ -1,36 +1,36 @@
 import * as b from "bobril";
 
-interface Voucher {
+interface Template {
   name: string;
 }
 
 export function VoucherTab() {
-  const [voucherId, setVoucherId] = b.useState<string | null>(null);
+  const [templateId, setTemplateId] = b.useState<string | null>(null);
   const code = b.useState(() => generateCode());
   const expiration = b.useState(() => generateExpiration());
   const pdfUrl = b.useState("");
-  const vouchers = b.useState<{ [id: string]: Voucher }>({});
+  const templates = b.useState<{ [id: string]: Template }>({});
 
   b.useEffect(() => {
     window.settings.get().then((settings) => {
-      vouchers(settings.vouchers);
-      const firstVoucherId = Object.keys(settings.vouchers)[0];
-      if (firstVoucherId) {
-        setVoucherId(firstVoucherId);
+      templates(settings.templates);
+      const firstTemplateId = Object.keys(settings.templates)[0];
+      if (firstTemplateId) {
+        setTemplateId(firstTemplateId);
       }
     });
   }, []);
 
   b.useEffect(() => {
-    if (voucherId !== null) {
+    if (templateId !== null) {
       const timeoutId = setTimeout(() => {
         window.voucher
-          .preview(voucherId, getVoucherParams(code(), expiration()))
+          .preview(templateId, getVoucherParams(code(), expiration()))
           .then((pdf) => pdfUrl(`${pdf}#toolbar=0&navpanes=0&view=Fit`));
       }, 500);
       return () => clearTimeout(timeoutId);
     }
-  }, [voucherId, code(), expiration()]);
+  }, [templateId, code(), expiration()]);
 
   return (
     <>
@@ -46,12 +46,12 @@ export function VoucherTab() {
         <div>
           Value:&nbsp;
           <select
-            value={voucherId}
-            onChange={(newValue: string) => setVoucherId(newValue)}
+            value={templateId}
+            onChange={(newValue: string) => setTemplateId(newValue)}
           >
-            {Object.entries(vouchers()).map(([id, voucher]) => (
+            {Object.entries(templates()).map(([id, template]) => (
               <option key={id} value={id}>
-                {voucher.name}
+                {template.name}
               </option>
             ))}
           </select>
@@ -80,9 +80,9 @@ export function VoucherTab() {
           <input
             type="button"
             onClick={() => {
-              if (voucherId !== null)
+              if (templateId !== null)
                 window.voucher.create(
-                  voucherId,
+                  templateId,
                   getVoucherParams(code(), expiration())
                 );
             }}

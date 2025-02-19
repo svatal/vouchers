@@ -7,8 +7,8 @@ import {
   prepareVoucher,
 } from "./pdf";
 import * as fs from "fs";
-import { getSettings, addTemplate, addVoucherSetting } from "./settings";
-import { ITexts, IVoucherSetting } from "./sharedTypes";
+import { getSettings, addTemplateFile, addTemplate } from "./settings";
+import { ITexts, IVoucherTemplate } from "./sharedTypes";
 
 class Main {
   mainWindow: BrowserWindow | null = null;
@@ -52,19 +52,19 @@ class Main {
         );
         await fs.promises.copyFile(filePath, destination);
         const pageCount = await getPdfPageCount(destination);
-        return addTemplate({ filename, pageCount });
+        return addTemplateFile({ filename, pageCount });
       }
     });
     ipcMain.handle(
       "template-create",
-      async (event, voucher: IVoucherSetting) => {
-        return addVoucherSetting(voucher);
+      async (event, voucher: IVoucherTemplate) => {
+        return addTemplate(voucher);
       }
     );
 
     ipcMain.handle(
       "template-preview",
-      async (event, voucher: IVoucherSetting) => {
+      async (event, voucher: IVoucherTemplate) => {
         const now = new Date();
         const preview = await prepareVoucher(voucher, {
           code: "ABCDEFG",

@@ -1,7 +1,7 @@
 import * as fs from "fs/promises";
 import * as path from "path";
 import { PDFDocument, rgb } from "pdf-lib";
-import { ITexts, IVoucherSetting } from "./sharedTypes";
+import { ITexts, IVoucherTemplate } from "./sharedTypes";
 import { getSettings } from "./settings";
 
 export async function previewVoucher(voucherId: string, texts: ITexts) {
@@ -16,35 +16,35 @@ export async function createVoucher(voucherId: string, texts: ITexts) {
 
 async function prepareVoucherFromTemplate(voucherId: string, texts: ITexts) {
   const settings = getSettings();
-  const voucherSetting = settings.vouchers[voucherId];
-  if (!voucherSetting) {
-    throw new Error("Voucher setting not found");
+  const template = settings.templates[voucherId];
+  if (!template) {
+    throw new Error("Voucher template not found");
   }
-  return await prepareVoucher(voucherSetting, texts);
+  return await prepareVoucher(template, texts);
 }
 
 export async function prepareVoucher(
-  voucherSetting: IVoucherSetting,
+  template: IVoucherTemplate,
   texts: ITexts
 ) {
   const settings = getSettings();
-  const template = path.join(
+  const templateFileName = path.join(
     __dirname,
     "..",
     "assets",
-    settings.templates[voucherSetting.templateId].filename
+    settings.templateFiles[template.templateFileId].filename
   );
-  const bytes = await fs.readFile(template);
+  const bytes = await fs.readFile(templateFileName);
   const origDoc = await PDFDocument.load(bytes);
   const targetDoc = await PDFDocument.create();
-  const [origPage] = await targetDoc.copyPages(origDoc, [voucherSetting.page]);
+  const [origPage] = await targetDoc.copyPages(origDoc, [template.page]);
   const page = targetDoc.addPage(origPage);
 
   page.setFontColor(rgb(1, 1, 1));
   page.setFontSize(10);
   [
-    { text: texts.code, position: voucherSetting.codePosition },
-    { text: texts.validUntil, position: voucherSetting.validUntilPosition },
+    { text: texts.code, position: template.codePosition },
+    { text: texts.validUntil, position: template.validUntilPosition },
   ].forEach(({ text, position }) => page.drawText(text, position));
 
   return targetDoc;

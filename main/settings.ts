@@ -3,8 +3,8 @@ import * as path from "path";
 import * as fs from "fs";
 import type {
   ISettings,
-  IVoucherSetting,
   IVoucherTemplate,
+  IVoucherTemplateFile,
 } from "./sharedTypes";
 
 const settingsPath = path.join(app.getPath("userData"), "settings.json");
@@ -23,30 +23,30 @@ function loadSettings() {
     settings = JSON.parse(fs.readFileSync(settingsPath, "utf-8"));
   } catch (e) {
     settings = {
-      vouchers: {
+      templates: {
         "300": {
           name: "300 Kč",
-          templateId: "voucher",
+          templateFileId: "voucher",
           page: 1,
           codePosition: { x: 270, y: 35 },
           validUntilPosition: { x: 300, y: 53 },
         },
         "500": {
           name: "500 Kč",
-          templateId: "voucher",
+          templateFileId: "voucher",
           page: 0,
           codePosition: { x: 270, y: 35 },
           validUntilPosition: { x: 300, y: 53 },
         },
         "1000": {
           name: "1000 Kč",
-          templateId: "voucher",
+          templateFileId: "voucher",
           page: 2,
           codePosition: { x: 270, y: 35 },
           validUntilPosition: { x: 300, y: 53 },
         },
       },
-      templates: {
+      templateFiles: {
         voucher: {
           filename: "voucher-template.pdf",
           pageCount: 3,
@@ -55,6 +55,16 @@ function loadSettings() {
     };
   }
   return settings;
+}
+
+export function addTemplateFile(template: IVoucherTemplateFile) {
+  if (!settings) {
+    loadSettings();
+  }
+  const id = generateId();
+  settings!.templateFiles[id] = template;
+  saveSettings();
+  return id;
 }
 
 export function addTemplate(template: IVoucherTemplate) {
@@ -67,22 +77,12 @@ export function addTemplate(template: IVoucherTemplate) {
   return id;
 }
 
-export function addVoucherSetting(voucher: IVoucherSetting) {
+export function editTemplate(id: string, template: IVoucherTemplate) {
   if (!settings) {
     loadSettings();
   }
-  const id = generateId();
-  settings!.vouchers[id] = voucher;
-  saveSettings();
-  return id;
-}
-
-export function editVoucherSetting(id: string, voucher: IVoucherSetting) {
-  if (!settings) {
-    loadSettings();
-  }
-  if (settings!.vouchers[id]) {
-    settings!.vouchers[id] = voucher;
+  if (settings!.templates[id]) {
+    settings!.templates[id] = template;
     saveSettings();
   }
 }

@@ -1,4 +1,4 @@
-import type { ISettings, ITexts, IVoucherSetting } from "./sharedTypes";
+import type { ISettings, ITexts, IVoucherTemplate } from "./sharedTypes";
 
 export {};
 
@@ -16,9 +16,9 @@ declare global {
       /** @returns templateId */
       upload: () => Promise<string>;
       /** @returns pdfContent */
-      preview: (voucher: IVoucherSetting) => Promise<string>;
+      preview: (voucher: IVoucherTemplate) => Promise<string>;
       /** @returns voucherId */
-      create: (voucher: IVoucherSetting) => Promise<string>;
+      create: (voucher: IVoucherTemplate) => Promise<string>;
     };
   }
 }
