@@ -50,6 +50,7 @@ class Main {
           "templates",
           filename
         );
+        await fs.promises.mkdir(path.dirname(destination), { recursive: true });
         await fs.promises.copyFile(filePath, destination);
         const pageCount = await getPdfPageCount(destination);
         return addTemplateFile({ filename, pageCount });

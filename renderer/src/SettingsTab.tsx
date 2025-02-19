@@ -11,16 +11,17 @@ export function SettingsTab() {
     null
   );
   const templatePreviewUrl = b.useState("");
+  const [lastUploadedId, setLastUploadedId] = b.useState<string | null>(null);
 
   b.useEffect(() => {
     window.settings.get().then((settings) => {
       setSettings(settings);
-      const firstTemplateId = Object.keys(settings.templates)[0];
-      if (firstTemplateId) {
-        setSelectedTemplateId(firstTemplateId);
+      const templateId = lastUploadedId ?? Object.keys(settings.templates)[0];
+      if (templateId) {
+        setSelectedTemplateId(templateId);
       }
     });
-  }, []);
+  }, [lastUploadedId]);
 
   b.useEffect(() => {
     if (selectedTemplateId !== null) {
@@ -38,6 +39,13 @@ export function SettingsTab() {
   return (
     <SplitPane split="vertical" minSize={200} defaultSize="50%">
       <div style={{ overflowY: "auto" }}>
+        <input
+          type="button"
+          value="Upload new template"
+          onClick={() => {
+            window.template.upload().then(setLastUploadedId);
+          }}
+        />
         {Object.entries(settings.templateFiles).map(
           ([templateFileId, templateFile]) => (
             <div key={templateFileId}>
