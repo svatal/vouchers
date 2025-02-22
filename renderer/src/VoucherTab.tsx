@@ -1,4 +1,5 @@
 import * as b from "bobril";
+import { debounce } from "./utils";
 
 interface Template {
   name: string;
@@ -23,12 +24,11 @@ export function VoucherTab() {
 
   b.useEffect(() => {
     if (templateId !== null) {
-      const timeoutId = setTimeout(() => {
+      return debounce(() => {
         window.voucher
           .preview(templateId, getVoucherParams(code(), expiration()))
           .then((pdf) => pdfUrl(`${pdf}#toolbar=0&navpanes=0&view=Fit`));
       }, 500);
-      return () => clearTimeout(timeoutId);
     }
   }, [templateId, code(), expiration()]);
 

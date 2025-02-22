@@ -15,7 +15,8 @@
     "title": "Vouchers",
     "updateTsConfig": true,
     "compilerOptions": {
-      "strict": true
+      "strict": true,
+      "noUncheckedIndexedAccess": true
     },
     "includeSources": [
       "../main/preload.d.ts"

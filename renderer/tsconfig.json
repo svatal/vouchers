@@ -17,6 +17,7 @@
     "moduleResolution": "bundler",
     "noEmit": true,
     "noEmitHelpers": true,
+    "noUncheckedIndexedAccess": true,
     "reactNamespace": "b",
     "removeComments": false,
     "skipLibCheck": false,
