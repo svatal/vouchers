@@ -29,7 +29,7 @@ export function SettingsTab() {
       setSettings(settings);
       const templateId = lastUploadedId ?? Object.keys(settings.templates)[0];
       if (templateId) {
-        selectTemplate(templateId);
+        selectTemplate(templateId, settings);
       }
     });
   }, [lastUploadedId]);
@@ -85,7 +85,7 @@ export function SettingsTab() {
                               ? "underline"
                               : "none",
                         }}
-                        onClick={() => selectTemplate(templateId)}
+                        onClick={() => selectTemplate(templateId, settings)}
                       >
                         Name: {template?.name}
                       </span>
@@ -124,9 +124,9 @@ export function SettingsTab() {
     </SplitPane>
   );
 
-  function selectTemplate(templateId: string) {
+  function selectTemplate(templateId: string, settings: ISettings) {
     setSelectedTemplateId(templateId);
-    const selectedTemplate = settings?.templates[templateId ?? ""];
+    const selectedTemplate = settings.templates[templateId ?? ""];
     if (selectedTemplate) {
       templateName(selectedTemplate.name);
       templateCodeX(selectedTemplate.codePosition.x);
