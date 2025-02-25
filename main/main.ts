@@ -13,6 +13,7 @@ import {
   ITexts,
   IVoucherTemplate,
 } from "./sharedTypes";
+import { getTemplatePath } from "./files";
 
 class Main {
   mainWindow: BrowserWindow | null = null;
@@ -49,11 +50,7 @@ class Main {
       if (!dialogResult.canceled && dialogResult.filePaths.length > 0) {
         const filePath = dialogResult.filePaths[0];
         const filename = path.basename(filePath);
-        const destination = path.join(
-          app.getPath("userData"),
-          "templates",
-          filename
-        );
+        const destination = getTemplatePath(filename);
         await fs.promises.mkdir(path.dirname(destination), { recursive: true });
         await fs.promises.copyFile(filePath, destination);
         const pageCount = await getPdfPageCount(destination);

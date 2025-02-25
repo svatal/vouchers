@@ -19,35 +19,8 @@ function loadSettings() {
     settings = JSON.parse(fs.readFileSync(settingsPath, "utf-8"));
   } catch (e) {
     settings = {
-      templates: {
-        "300": {
-          name: "300 Kč",
-          templateFileId: "voucher",
-          page: 1,
-          codePosition: { x: 270, y: 35 },
-          validUntilPosition: { x: 300, y: 53 },
-        },
-        "500": {
-          name: "500 Kč",
-          templateFileId: "voucher",
-          page: 0,
-          codePosition: { x: 270, y: 35 },
-          validUntilPosition: { x: 300, y: 53 },
-        },
-        "1000": {
-          name: "1000 Kč",
-          templateFileId: "voucher",
-          page: 2,
-          codePosition: { x: 270, y: 35 },
-          validUntilPosition: { x: 300, y: 53 },
-        },
-      },
-      templateFiles: {
-        voucher: {
-          filename: "voucher-template.pdf",
-          templateIds: ["500", "300", "1000"],
-        },
-      },
+      templates: {},
+      templateFiles: {},
     };
   }
   return settings;
@@ -70,8 +43,8 @@ export function addTemplateFile(template: {
       name: `${template.filename}: ${i + 1}`,
       templateFileId: id,
       page: i,
-      codePosition: { x: 0, y: 0 },
-      validUntilPosition: { x: 0, y: 0 },
+      codePosition: { x: 10, y: 10 },
+      validUntilPosition: { x: 10, y: 10 },
     };
   });
   saveSettings();

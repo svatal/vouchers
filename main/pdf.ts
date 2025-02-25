@@ -1,8 +1,8 @@
 import * as fs from "fs/promises";
-import * as path from "path";
 import { PDFDocument, rgb } from "pdf-lib";
 import { ITexts, IVoucherTemplate } from "./sharedTypes";
 import { getSettings } from "./settings";
+import { getTemplatePath } from "./files";
 
 export async function previewVoucher(voucherId: string, texts: ITexts) {
   const voucherDoc = await prepareVoucherFromTemplate(voucherId, texts);
@@ -28,10 +28,7 @@ export async function prepareVoucher(
   texts: ITexts
 ) {
   const settings = getSettings();
-  const templateFileName = path.join(
-    __dirname,
-    "..",
-    "assets",
+  const templateFileName = getTemplatePath(
     settings.templateFiles[template.templateFileId].filename
   );
   const bytes = await fs.readFile(templateFileName);
