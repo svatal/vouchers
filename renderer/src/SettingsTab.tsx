@@ -97,7 +97,7 @@ export function SettingsTab() {
           )
         )}
       </div>
-      <div style={{ height: "100%" }}>
+      <div style={{ height: "100%", display: "flex", flexDirection: "column" }}>
         <div>
           {selectedTemplate && (
             <>
