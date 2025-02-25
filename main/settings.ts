@@ -1,11 +1,7 @@
 import { app } from "electron";
 import * as path from "path";
 import * as fs from "fs";
-import type {
-  ISettings,
-  IVoucherTemplate,
-  IVoucherTemplateFile,
-} from "./sharedTypes";
+import type { IEditableVoucherTemplate, ISettings } from "./sharedTypes";
 
 const settingsPath = path.join(app.getPath("userData"), "settings.json");
 
@@ -49,7 +45,7 @@ function loadSettings() {
       templateFiles: {
         voucher: {
           filename: "voucher-template.pdf",
-          pageCount: 3,
+          templateIds: ["500", "300", "1000"],
         },
       },
     };
@@ -57,34 +53,38 @@ function loadSettings() {
   return settings;
 }
 
-export function addTemplateFile(template: IVoucherTemplateFile) {
+export function addTemplateFile(template: {
+  filename: string;
+  pageCount: number;
+}) {
   if (!settings) {
     loadSettings();
   }
   const id = generateId();
-  settings!.templateFiles[id] = template;
+  settings!.templateFiles[id] = {
+    filename: template.filename,
+    templateIds: Array.from({ length: template.pageCount }).map(generateId),
+  };
+  settings!.templateFiles[id].templateIds.forEach((tid, i) => {
+    settings!.templates[tid] = {
+      name: `${template.filename}: ${i + 1}`,
+      templateFileId: id,
+      page: i,
+      codePosition: { x: 0, y: 0 },
+      validUntilPosition: { x: 0, y: 0 },
+    };
+  });
   saveSettings();
   return id;
 }
 
-export function addTemplate(template: IVoucherTemplate) {
+export function editTemplate(id: string, template: IEditableVoucherTemplate) {
   if (!settings) {
     loadSettings();
   }
-  const id = generateId();
-  settings!.templates[id] = template;
+  const oldTemplate = settings!.templates[id];
+  settings!.templates[id] = { ...oldTemplate, ...template };
   saveSettings();
-  return id;
-}
-
-export function editTemplate(id: string, template: IVoucherTemplate) {
-  if (!settings) {
-    loadSettings();
-  }
-  if (settings!.templates[id]) {
-    settings!.templates[id] = template;
-    saveSettings();
-  }
 }
 
 function saveSettings() {

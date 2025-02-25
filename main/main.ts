@@ -7,8 +7,12 @@ import {
   prepareVoucher,
 } from "./pdf";
 import * as fs from "fs";
-import { getSettings, addTemplateFile, addTemplate } from "./settings";
-import { ITexts, IVoucherTemplate } from "./sharedTypes";
+import { getSettings, addTemplateFile, editTemplate } from "./settings";
+import {
+  IEditableVoucherTemplate,
+  ITexts,
+  IVoucherTemplate,
+} from "./sharedTypes";
 
 class Main {
   mainWindow: BrowserWindow | null = null;
@@ -57,9 +61,9 @@ class Main {
       }
     });
     ipcMain.handle(
-      "template-create",
-      async (event, voucher: IVoucherTemplate) => {
-        return addTemplate(voucher);
+      "template-edit",
+      async (event, templateId: string, template: IEditableVoucherTemplate) => {
+        return editTemplate(templateId, template);
       }
     );
 

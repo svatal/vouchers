@@ -3,17 +3,20 @@ export interface ITexts {
   validUntil: string;
 }
 
-export interface IVoucherTemplate {
+export interface IEditableVoucherTemplate {
   name: string;
-  templateFileId: string;
-  page: number;
   codePosition: { x: number; y: number };
   validUntilPosition: { x: number; y: number };
 }
 
+export interface IVoucherTemplate extends IEditableVoucherTemplate {
+  templateFileId: string;
+  page: number;
+}
+
 export interface IVoucherTemplateFile {
   filename: string;
-  pageCount: number;
+  templateIds: string[];
 }
 
 export interface ISettings {

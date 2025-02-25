@@ -73,35 +73,25 @@ export function SettingsTab() {
             <div key={templateFileId}>
               <h3>{templateFile.filename}</h3>
               <ul>
-                {Array.from(
-                  { length: templateFile.pageCount },
-                  (_, pageIndex) => (
-                    <li key={pageIndex}>
-                      {pageIndex + 1}:
-                      {Object.entries(settings.templates)
-                        .filter(
-                          ([_, template]) =>
-                            template.templateFileId === templateFileId &&
-                            template.page === pageIndex
-                        )
-                        .map(([templateId, template]) => (
-                          <span
-                            key={templateId}
-                            style={{
-                              cursor: "pointer",
-                              textDecoration:
-                                templateId === selectedTemplateId
-                                  ? "underline"
-                                  : "none",
-                            }}
-                            onClick={() => selectTemplate(templateId)}
-                          >
-                            Name: {template.name}
-                          </span>
-                        ))}
+                {templateFile.templateIds.map((templateId) => {
+                  const template = settings.templates[templateId];
+                  return (
+                    <li key={templateId}>
+                      <span
+                        style={{
+                          cursor: "pointer",
+                          textDecoration:
+                            templateId === selectedTemplateId
+                              ? "underline"
+                              : "none",
+                        }}
+                        onClick={() => selectTemplate(templateId)}
+                      >
+                        Name: {template?.name}
+                      </span>
                     </li>
-                  )
-                )}
+                  );
+                })}
               </ul>
             </div>
           )
