@@ -3,6 +3,7 @@ import { SplitPane } from "./components/SplitPane";
 import { PositionInput } from "./components/PositionInput";
 import type { ISettings } from "../../main/sharedTypes";
 import { debounce } from "./utils";
+import { LeftRight } from "./components/LeftRight";
 
 export function SettingsTab() {
   const [settings, setSettings] = b.useState<ISettings>({
@@ -92,20 +93,32 @@ export function SettingsTab() {
         )}
       </div>
       <div style={{ height: "100%", display: "flex", flexDirection: "column" }}>
-        <div>
+        <div style={{ margin: "0 0 5px 5px" }}>
           {selectedTemplate && selectedTemplateId && (
             <>
-              <div>
-                <label>
-                  Name:
-                  <input type="text" value={templateName} />
-                </label>
-              </div>
-              <PositionInput label="Code" x={templateCodeX} y={templateCodeY} />
-              <PositionInput
-                label="Valid Until"
-                x={templateValidUntilX}
-                y={templateValidUntilY}
+              <LeftRight
+                left="Name:"
+                right={
+                  <input
+                    type="text"
+                    value={templateName}
+                    style={{ width: "100%", boxSizing: "border-box" }}
+                  />
+                }
+                expandRight
+              />
+              <LeftRight
+                left="Code Position"
+                right={<PositionInput x={templateCodeX} y={templateCodeY} />}
+              />
+              <LeftRight
+                left="Valid Until Position"
+                right={
+                  <PositionInput
+                    x={templateValidUntilX}
+                    y={templateValidUntilY}
+                  />
+                }
               />
               <input
                 type="button"

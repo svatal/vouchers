@@ -1,15 +1,14 @@
 import * as b from "bobril";
 
 interface PositionInputProps {
-  label: string;
   x: b.IProp<number>;
   y: b.IProp<number>;
 }
 
-export const PositionInput = ({ label, x, y }: PositionInputProps) => (
-  <div>
-    <label>
-      {label} Position X:
+export const PositionInput = ({ x, y }: PositionInputProps) => (
+  <>
+    <label style={{ display: "inline-block" }}>
+      X:
       <input
         type="number"
         value={x()}
@@ -17,7 +16,7 @@ export const PositionInput = ({ label, x, y }: PositionInputProps) => (
         style={{ width: 40 }}
       />
     </label>
-    <label>
+    <label style={{ display: "inline-block" }}>
       Y:
       <input
         type="number"
@@ -26,5 +25,5 @@ export const PositionInput = ({ label, x, y }: PositionInputProps) => (
         style={{ width: 40 }}
       />
     </label>
-  </div>
+  </>
 );
