@@ -120,20 +120,42 @@ export function SettingsTab() {
                   />
                 }
               />
-              <input
-                type="button"
-                value="Update"
-                onClick={() => {
-                  window.template.edit(selectedTemplateId, {
-                    name: templateName(),
-                    codePosition: { x: templateCodeX(), y: templateCodeY() },
-                    validUntilPosition: {
-                      x: templateValidUntilX(),
-                      y: templateValidUntilY(),
-                    },
-                  });
-                  reloadSettings(null);
-                }}
+              <LeftRight
+                left={
+                  <input
+                    type="button"
+                    value="Update"
+                    onClick={() => {
+                      window.template.edit(selectedTemplateId, {
+                        name: templateName(),
+                        codePosition: {
+                          x: templateCodeX(),
+                          y: templateCodeY(),
+                        },
+                        validUntilPosition: {
+                          x: templateValidUntilX(),
+                          y: templateValidUntilY(),
+                        },
+                      });
+                      reloadSettings(null);
+                    }}
+                  />
+                }
+                right={
+                  <input
+                    type="button"
+                    value="Copy Positions from Previous"
+                    onClick={() => {
+                      const template = getPrevTemplate(selectedTemplateId);
+                      if (template) {
+                        templateCodeX(template.codePosition.x);
+                        templateCodeY(template.codePosition.y);
+                        templateValidUntilX(template.validUntilPosition.x);
+                        templateValidUntilY(template.validUntilPosition.y);
+                      }
+                    }}
+                  />
+                }
               />
             </>
           )}
@@ -145,6 +167,28 @@ export function SettingsTab() {
       </div>
     </SplitPane>
   );
+
+  function getPrevTemplate(selectedTemplateId: string) {
+    const templateFiles = Object.keys(settings.templateFiles).map(
+      (fileName) => settings.templateFiles[fileName]!
+    );
+    const thisTemplateIdx = templateFiles.findIndex((templateFile) =>
+      templateFile.templateIds.includes(selectedTemplateId)
+    );
+    const templateFile = templateFiles[thisTemplateIdx]!;
+    const templateIdx =
+      templateFile.templateIds.indexOf(selectedTemplateId) - 1;
+    if (templateIdx >= 0) {
+      return settings.templates[templateFile.templateIds[templateIdx]!];
+    }
+    const prevTemplateFile = templateFiles[thisTemplateIdx - 1];
+    if (prevTemplateFile) {
+      return settings.templates[
+        prevTemplateFile.templateIds[prevTemplateFile.templateIds.length - 1]!
+      ];
+    }
+    return undefined;
+  }
 
   function reloadSettings(selectTemplateId: string | null | undefined) {
     window.settings.get().then((settings) => {
