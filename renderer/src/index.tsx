@@ -25,7 +25,7 @@ function App() {
         style={{ display: "flex", gap: "10px", borderBottom: "1px solid #ccc" }}
       >
         <TabButton
-          label="Voucher"
+          label="Create Voucher"
           isActive={activeTab() === "voucher"}
           onClick={() => activeTab("voucher")}
         />

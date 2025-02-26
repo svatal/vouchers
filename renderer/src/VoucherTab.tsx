@@ -44,7 +44,7 @@ export function VoucherTab() {
         }}
       >
         <div>
-          Value:&nbsp;
+          Template:&nbsp;
           <select
             value={templateId}
             onChange={(newValue: string) => setTemplateId(newValue)}
