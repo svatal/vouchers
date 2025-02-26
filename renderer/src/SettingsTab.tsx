@@ -25,13 +25,7 @@ export function SettingsTab() {
   const templateValidUntilY = b.useState(0);
 
   b.useEffect(() => {
-    window.settings.get().then((settings) => {
-      setSettings(settings);
-      const templateId = lastUploadedId ?? Object.keys(settings.templates)[0];
-      if (templateId) {
-        selectTemplate(templateId, settings);
-      }
-    });
+    reloadSettings(lastUploadedId ?? undefined);
   }, [lastUploadedId]);
 
   b.useEffect(() => {
@@ -99,7 +93,7 @@ export function SettingsTab() {
       </div>
       <div style={{ height: "100%", display: "flex", flexDirection: "column" }}>
         <div>
-          {selectedTemplate && (
+          {selectedTemplate && selectedTemplateId && (
             <>
               <div>
                 <label>
@@ -113,6 +107,21 @@ export function SettingsTab() {
                 x={templateValidUntilX}
                 y={templateValidUntilY}
               />
+              <input
+                type="button"
+                value="Update"
+                onClick={() => {
+                  window.template.edit(selectedTemplateId, {
+                    name: templateName(),
+                    codePosition: { x: templateCodeX(), y: templateCodeY() },
+                    validUntilPosition: {
+                      x: templateValidUntilX(),
+                      y: templateValidUntilY(),
+                    },
+                  });
+                  reloadSettings(null);
+                }}
+              />
             </>
           )}
         </div>
@@ -123,6 +132,19 @@ export function SettingsTab() {
       </div>
     </SplitPane>
   );
+
+  function reloadSettings(selectTemplateId: string | null | undefined) {
+    window.settings.get().then((settings) => {
+      setSettings(settings);
+      if (selectTemplateId === null) {
+        return;
+      }
+      const templateId = lastUploadedId ?? Object.keys(settings.templates)[0];
+      if (templateId) {
+        selectTemplate(templateId, settings);
+      }
+    });
+  }
 
   function selectTemplate(templateId: string, settings: ISettings) {
     setSelectedTemplateId(templateId);
