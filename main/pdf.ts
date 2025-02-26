@@ -1,22 +1,25 @@
 import * as fs from "fs/promises";
 import { PDFDocument, rgb } from "pdf-lib";
-import { ITexts, IVoucherTemplate } from "./sharedTypes";
+import { IVoucherTexts, IVoucherTemplate } from "./sharedTypes";
 import { getSettings } from "./settings";
 import { getTemplatePath } from "./files";
 
-export async function previewVoucher(voucherId: string, texts: ITexts) {
-  const voucherDoc = await prepareVoucherFromTemplate(voucherId, texts);
+export async function previewVoucher(templateId: string, texts: IVoucherTexts) {
+  const voucherDoc = await prepareVoucherFromTemplate(templateId, texts);
   return await voucherDoc.saveAsBase64({ dataUri: true });
 }
 
-export async function createVoucher(voucherId: string, texts: ITexts) {
-  const voucherDoc = await prepareVoucherFromTemplate(voucherId, texts);
+export async function createVoucher(templateId: string, texts: IVoucherTexts) {
+  const voucherDoc = await prepareVoucherFromTemplate(templateId, texts);
   return await voucherDoc.save();
 }
 
-async function prepareVoucherFromTemplate(voucherId: string, texts: ITexts) {
+async function prepareVoucherFromTemplate(
+  templateId: string,
+  texts: IVoucherTexts
+) {
   const settings = getSettings();
-  const template = settings.templates[voucherId];
+  const template = settings.templates[templateId];
   if (!template) {
     throw new Error("Voucher template not found");
   }
@@ -25,7 +28,7 @@ async function prepareVoucherFromTemplate(voucherId: string, texts: ITexts) {
 
 export async function prepareVoucher(
   template: IVoucherTemplate,
-  texts: ITexts
+  texts: IVoucherTexts
 ) {
   const settings = getSettings();
   const templateFileName = getTemplatePath(

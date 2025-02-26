@@ -1,6 +1,16 @@
-export interface ITexts {
+export interface IVoucherTexts {
   code: string;
   validUntil: string;
+}
+
+export interface IVoucherInputs extends IVoucherTexts {
+  templateId: string;
+  note: string;
+}
+
+export interface IVoucher extends IVoucherInputs {
+  createdAtTicks: number;
+  isRedeemed: boolean;
 }
 
 export interface IEditableVoucherTemplate {
@@ -20,6 +30,7 @@ export interface IVoucherTemplateFile {
 }
 
 export interface ISettings {
+  vouchers: { [id: string]: IVoucher };
   templates: { [id: string]: IVoucherTemplate };
   templateFiles: { [id: string]: IVoucherTemplateFile };
 }

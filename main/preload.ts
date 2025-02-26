@@ -1,15 +1,16 @@
 import { contextBridge, ipcRenderer } from "electron";
 import {
   IEditableVoucherTemplate,
-  ITexts,
+  IVoucherTexts,
   IVoucherTemplate,
+  IVoucherInputs,
 } from "./sharedTypes";
 
 contextBridge.exposeInMainWorld("voucher", {
-  preview: (voucherId: string, texts: ITexts) =>
-    ipcRenderer.invoke("voucher-preview", voucherId, texts),
-  create: (voucherId: string, texts: ITexts) =>
-    ipcRenderer.invoke("voucher-create", voucherId, texts),
+  preview: (templateId: string, texts: IVoucherTexts) =>
+    ipcRenderer.invoke("voucher-preview", templateId, texts),
+  create: (inputs: IVoucherInputs) =>
+    ipcRenderer.invoke("voucher-create", inputs),
 });
 
 contextBridge.exposeInMainWorld("settings", {

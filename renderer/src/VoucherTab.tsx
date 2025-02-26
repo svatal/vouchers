@@ -9,6 +9,7 @@ export function VoucherTab() {
   const [templateId, setTemplateId] = b.useState<string | null>(null);
   const code = b.useState(() => generateCode());
   const expiration = b.useState(() => generateExpiration());
+  const note = b.useState("");
   const pdfUrl = b.useState("");
   const templates = b.useState<{ [id: string]: Template }>({});
 
@@ -26,7 +27,7 @@ export function VoucherTab() {
     if (templateId !== null) {
       return debounce(() => {
         window.voucher
-          .preview(templateId, getVoucherParams(code(), expiration()))
+          .preview(templateId, { code: code(), validUntil: expiration() })
           .then((pdf) => pdfUrl(`${pdf}#toolbar=0&navpanes=0&view=Fit`));
       }, 500);
     }
@@ -58,7 +59,7 @@ export function VoucherTab() {
         </div>
         <div>
           Code:&nbsp;
-          <input type="text" value={code} />
+          <input type="text" value={code} style={{ width: "70px" }} />
           &nbsp;
           <input
             type="button"
@@ -68,7 +69,7 @@ export function VoucherTab() {
         </div>
         <div>
           Expiration:&nbsp;
-          <input type="text" value={expiration} />
+          <input type="text" value={expiration} style={{ width: "70px" }} />
           &nbsp;
           <input
             type="button"
@@ -77,14 +78,20 @@ export function VoucherTab() {
           />
         </div>
         <div>
+          Note:&nbsp;
+          <input type="text" value={note} />
+        </div>
+        <div>
           <input
             type="button"
             onClick={() => {
               if (templateId !== null)
-                window.voucher.create(
+                window.voucher.create({
                   templateId,
-                  getVoucherParams(code(), expiration())
-                );
+                  code: code(),
+                  validUntil: expiration(),
+                  note: note(),
+                });
             }}
             value="Create Voucher"
           />
@@ -98,10 +105,6 @@ export function VoucherTab() {
       </div>
     </>
   );
-}
-
-function getVoucherParams(code: string, validUntil: string) {
-  return { code, validUntil };
 }
 
 function generateCode() {

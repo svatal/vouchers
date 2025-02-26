@@ -1,8 +1,9 @@
 import type {
   IEditableVoucherTemplate,
   ISettings,
-  ITexts,
+  IVoucherTexts,
   IVoucherTemplate,
+  IVoucherInputs,
 } from "./sharedTypes";
 
 export {};
@@ -11,8 +12,8 @@ declare global {
   interface Window {
     voucher: {
       /** @returns pdfContent */
-      preview: (voucherId: string, texts: ITexts) => Promise<string>;
-      create: (voucherId: string, texts: ITexts) => Promise<void>;
+      preview: (templateId: string, texts: IVoucherTexts) => Promise<string>;
+      create: (inputs: IVoucherInputs) => Promise<void>;
     };
     settings: {
       get: () => Promise<ISettings>;

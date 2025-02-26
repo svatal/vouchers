@@ -7,6 +7,7 @@ import { LeftRight } from "./components/LeftRight";
 
 export function SettingsTab() {
   const [settings, setSettings] = b.useState<ISettings>({
+    vouchers: {},
     templateFiles: {},
     templates: {},
   });

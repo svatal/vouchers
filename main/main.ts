@@ -7,11 +7,17 @@ import {
   prepareVoucher,
 } from "./pdf";
 import * as fs from "fs";
-import { getSettings, addTemplateFile, editTemplate } from "./settings";
+import {
+  getSettings,
+  addTemplateFile,
+  editTemplate,
+  createVoucher as createVoucherInSettings,
+} from "./settings";
 import {
   IEditableVoucherTemplate,
-  ITexts,
+  IVoucherTexts,
   IVoucherTemplate,
+  IVoucherInputs,
 } from "./sharedTypes";
 import { getTemplatePath } from "./files";
 
@@ -27,21 +33,19 @@ class Main {
     ipcMain.handle("settings-get", getSettings);
     ipcMain.handle(
       "voucher-preview",
-      (event, voucherId: string, texts: ITexts) =>
+      (event, voucherId: string, texts: IVoucherTexts) =>
         previewVoucher(voucherId, texts)
     );
-    ipcMain.handle(
-      "voucher-create",
-      async (event, voucherId: string, texts: ITexts) => {
-        const dialogResult = await dialog.showSaveDialog(this.mainWindow!, {
-          defaultPath: path.join(app.getPath("downloads"), "voucher.pdf"),
-        });
-        if (!dialogResult.canceled) {
-          const bytes = await createVoucher(voucherId, texts);
-          fs.writeFileSync(dialogResult.filePath, bytes);
-        }
+    ipcMain.handle("voucher-create", async (event, inputs: IVoucherInputs) => {
+      const dialogResult = await dialog.showSaveDialog(this.mainWindow!, {
+        defaultPath: path.join(app.getPath("downloads"), "voucher.pdf"),
+      });
+      if (!dialogResult.canceled) {
+        const bytes = await createVoucher(inputs.templateId, inputs);
+        fs.writeFileSync(dialogResult.filePath, bytes);
+        createVoucherInSettings(inputs);
       }
-    );
+    });
     ipcMain.handle("template-upload", async () => {
       const dialogResult = await dialog.showOpenDialog(this.mainWindow!, {
         properties: ["openFile"],

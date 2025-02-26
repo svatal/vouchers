@@ -1,7 +1,11 @@
 import { app } from "electron";
 import * as path from "path";
 import * as fs from "fs";
-import type { IEditableVoucherTemplate, ISettings } from "./sharedTypes";
+import type {
+  IEditableVoucherTemplate,
+  ISettings,
+  IVoucherInputs,
+} from "./sharedTypes";
 
 const settingsPath = path.join(app.getPath("userData"), "settings.json");
 
@@ -19,6 +23,7 @@ function loadSettings() {
     settings = JSON.parse(fs.readFileSync(settingsPath, "utf-8"));
   } catch (e) {
     settings = {
+      vouchers: {},
       templates: {},
       templateFiles: {},
     };
@@ -58,6 +63,20 @@ export function editTemplate(id: string, template: IEditableVoucherTemplate) {
   const oldTemplate = settings!.templates[id];
   settings!.templates[id] = { ...oldTemplate, ...template };
   saveSettings();
+}
+
+export function createVoucher(voucher: IVoucherInputs) {
+  if (!settings) {
+    loadSettings();
+  }
+  const id = generateId();
+  settings!.vouchers[id] = {
+    ...voucher,
+    createdAtTicks: Date.now(),
+    isRedeemed: false,
+  };
+  saveSettings();
+  return id;
 }
 
 function saveSettings() {
