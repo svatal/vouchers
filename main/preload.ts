@@ -11,6 +11,8 @@ contextBridge.exposeInMainWorld("voucher", {
     ipcRenderer.invoke("voucher-preview", templateId, texts),
   create: (inputs: IVoucherInputs) =>
     ipcRenderer.invoke("voucher-create", inputs),
+  redeem: (voucherId: string, redeem?: boolean) =>
+    ipcRenderer.invoke("voucher-redeem", voucherId, redeem),
 });
 
 contextBridge.exposeInMainWorld("settings", {

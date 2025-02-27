@@ -79,6 +79,14 @@ export function createVoucher(voucher: IVoucherInputs) {
   return id;
 }
 
+export function redeemVoucher(id: string, redeem?: boolean) {
+  if (!settings) {
+    loadSettings();
+  }
+  settings!.vouchers[id].isRedeemed = redeem ?? true;
+  saveSettings();
+}
+
 function saveSettings() {
   fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2));
 }

@@ -36,12 +36,29 @@ export function VouchersTab() {
         </thead>
         <tbody>
           {entries.map(([id, voucher]) => (
-            <tr key={id}>
+            <tr
+              key={id}
+              style={{ color: voucher.isRedeemed ? "lightgray" : "black" }}
+            >
               <td>{voucher.code}</td>
               <td>{voucher.validUntil}</td>
               <td>{settings.templates[voucher.templateId]?.name}</td>
               <td>{voucher.note}</td>
-              <td>{voucher.isRedeemed ? "Yes" : "No"}</td>
+              <td>
+                {voucher.isRedeemed ? "Yes" : "No"}{" "}
+                {
+                  <input
+                    type="button"
+                    value={voucher.isRedeemed ? "Revalidate" : "Redeem"}
+                    onClick={() => {
+                      window.voucher
+                        .redeem(id, !voucher.isRedeemed)
+                        .then(() => window.settings.get())
+                        .then(setSettings);
+                    }}
+                  />
+                }
+              </td>
             </tr>
           ))}
         </tbody>

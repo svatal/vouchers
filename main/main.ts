@@ -12,6 +12,7 @@ import {
   addTemplateFile,
   editTemplate,
   createVoucher as createVoucherInSettings,
+  redeemVoucher,
 } from "./settings";
 import {
   IEditableVoucherTemplate,
@@ -46,6 +47,11 @@ class Main {
         createVoucherInSettings(inputs);
       }
     });
+    ipcMain.handle(
+      "voucher-redeem",
+      async (event, voucherId: string, redeem?: boolean) =>
+        redeemVoucher(voucherId, redeem)
+    );
     ipcMain.handle("template-upload", async () => {
       const dialogResult = await dialog.showOpenDialog(this.mainWindow!, {
         properties: ["openFile"],

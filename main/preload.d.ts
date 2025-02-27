@@ -14,6 +14,7 @@ declare global {
       /** @returns pdfContent */
       preview: (templateId: string, texts: IVoucherTexts) => Promise<string>;
       create: (inputs: IVoucherInputs) => Promise<void>;
+      redeem: (voucherId: string, redeem?: boolean) => Promise<void>;
     };
     settings: {
       get: () => Promise<ISettings>;
