@@ -11,18 +11,29 @@ export function VouchersTab() {
     window.settings.get().then(setSettings);
   }, []);
   const codeFilter = b.useState("");
+  const [showRedeemed, setShowRedeemed] = b.useState(false);
   const entries = b.useMemo(() => {
     const lcCodeFilter = codeFilter().toLocaleLowerCase();
     return Object.entries(settings.vouchers)
-      .filter(([_, voucher]) =>
-        voucher.code.toLocaleLowerCase().includes(lcCodeFilter)
+      .filter(
+        ([_, voucher]) =>
+          (showRedeemed || !voucher.isRedeemed) &&
+          voucher.code.toLocaleLowerCase().includes(lcCodeFilter)
       )
       .sort(([_keyA, a], [_keyB, b]) => b.createdAtTicks - a.createdAtTicks);
-  }, [settings, codeFilter()]);
+  }, [settings, codeFilter(), showRedeemed]);
   return (
     <>
       <div>
         Code: <input type="text" value={codeFilter} />
+        <label>
+          <input
+            type="checkbox"
+            checked={showRedeemed}
+            onChange={(newValue) => setShowRedeemed(newValue)}
+          />
+          Show redeemed
+        </label>
       </div>
       <table>
         <thead>
