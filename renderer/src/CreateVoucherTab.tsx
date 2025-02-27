@@ -5,7 +5,7 @@ interface Template {
   name: string;
 }
 
-export function VoucherTab() {
+export function CreateVoucherTab() {
   const [templateId, setTemplateId] = b.useState<string | null>(null);
   const code = b.useState(() => generateCode());
   const expiration = b.useState(() => generateExpiration());
