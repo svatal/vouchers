@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "dist/main.js",
   "scripts": {
-    "start2": "tsc && electron --trace-warnings .",
+    "start2": "tsc && set NODE_ENV=development&& electron --trace-warnings .",
     "start": "electron-forge start",
     "package": "electron-forge package",
     "make": "electron-forge make"

@@ -91,7 +91,11 @@ class Main {
       },
     });
 
-    this.mainWindow.loadFile("renderer/dist/index.html");
+    if (process.env.NODE_ENV === "development") {
+      this.mainWindow.loadURL("http://localhost:8080");
+    } else {
+      this.mainWindow.loadFile("renderer/dist/index.html");
+    }
     this.mainWindow.on("closed", () => {
       this.mainWindow = null;
     });
