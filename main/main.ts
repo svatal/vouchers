@@ -22,6 +22,8 @@ import {
 } from "./sharedTypes";
 import { getTemplatePath } from "./files";
 
+if (require("electron-squirrel-startup")) app.quit();
+
 class Main {
   mainWindow: BrowserWindow | null = null;
 
@@ -91,6 +93,7 @@ class Main {
     this.mainWindow = new BrowserWindow({
       width: 1000,
       height: 800,
+      icon: path.join(__dirname, "../images/voucher.png"),
       webPreferences: {
         // nodeIntegration: true,
         preload: path.join(__dirname, "preload.js"),
